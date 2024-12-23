@@ -1,17 +1,9 @@
+import { useSudoku } from "@/contexts/sudoku/useSudoku";
 import { formatTime } from "@/utils";
-import { Brain, Clock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Clock } from "lucide-react";
 
 export const Header = () => {
-  const [time, setTime] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime((prevTime) => prevTime + 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const { time } = useSudoku();
 
   return (
     <div className="w-full bg-blue-500 p-5 text-white">
@@ -20,10 +12,6 @@ export const Header = () => {
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5" />
           <span className="font-mono text-xl">{formatTime(time)}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Brain className="h-5 w-5" />
-          <span className="text-xl">10 moves</span>
         </div>
       </div>
     </div>

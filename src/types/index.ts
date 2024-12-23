@@ -1,5 +1,10 @@
-export type Cell = [number, number];
+export type Cell = {
+  row: number;
+  col: number;
+  value: number;
+  isFixed: boolean;
+};
 
-export type Grid = number[][];
+export type Grid = Cell[][];
 
-export type Difficulty = "Easy" | "Medium" | "Hard";
+export type Difficulty = "easy" | "medium" | "hard";

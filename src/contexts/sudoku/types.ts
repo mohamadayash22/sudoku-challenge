@@ -2,5 +2,7 @@ import { Grid } from "@/types";
 
 export type ContextProps = {
   grid: Grid;
-  setGrid: (grid: Grid) => void;
+  setGrid: React.Dispatch<React.SetStateAction<Grid>>;
+  time: number;
+  setTime: React.Dispatch<React.SetStateAction<number>>;
 };

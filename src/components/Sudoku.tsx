@@ -5,26 +5,30 @@ import { Cell, Grid } from "@/types";
 import { useState } from "react";
 
 export const Sudoku = () => {
-  const [selectedCell, setSelectedCell] = useState<Cell>([0, 0]);
-  const [conflicts, setConflicts] = useState<Set<string>>(new Set());
   const { grid, setGrid } = useSudoku();
+  const [conflicts, setConflicts] = useState<Set<string>>(new Set());
+  const [selectedCell, setSelectedCell] = useState<Cell>(grid[0][0]);
 
   const fillCell = (value: number) => {
-    const [r, c] = selectedCell;
-    const newGrid = grid.map((row, rowIdx) =>
-      row.map((cell, colIdx) => (rowIdx === r && colIdx === c ? value : cell)),
+    const { row, col, isFixed } = selectedCell;
+    console.log(selectedCell);
+    if (isFixed) return;
+    const newGrid = grid.map((cells) =>
+      cells.map((cell) =>
+        cell.col === col && cell.row === row ? { ...cell, value } : cell,
+      ),
     );
     setGrid(newGrid);
-    highlightConflics(newGrid, selectedCell);
+    highlightConflicts(newGrid, selectedCell);
   };
 
-  const highlightConflics = (grid: Grid, cell: Cell) => {
+  const highlightConflicts = (grid: Grid, cell: Cell) => {
     const conf = getConflicts(grid, cell);
     setConflicts(new Set([...conflicts.values(), ...conf.values()]));
   };
 
-  const handleCellClick = (row: number, col: number) => {
-    setSelectedCell([row, col]);
+  const handleCellClick = (cell: Cell) => {
+    setSelectedCell(cell);
   };
 
   return (
