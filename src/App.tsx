@@ -1,12 +1,20 @@
-import { Sudoku } from "@/components";
 import { SudokuContextProvider } from "@/contexts/sudoku/SudokuContextProvider";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { HomePage, SolverPage, RulesPage } from "@/pages";
+import { Layout } from "@/components";
 
 export default function App() {
   return (
-    <main className="min-h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 px-4 py-5">
+    <Router>
       <SudokuContextProvider>
-        <Sudoku />
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/rules" element={<RulesPage />} />
+            <Route path="/solver" element={<SolverPage />} />
+          </Routes>
+        </Layout>
       </SudokuContextProvider>
-    </main>
+    </Router>
   );
 }
