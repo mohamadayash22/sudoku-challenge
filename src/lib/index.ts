@@ -1,16 +1,24 @@
 import { Cell, Difficulty, Grid } from "@/types";
 import { generateRandomNumber } from "@/utils";
 
+export const fillCell = (grid: Grid, selectedCell: Cell, value: number) => {
+  const filledGrid = grid.map((cells) =>
+    cells.map((cell) =>
+      cell.row === selectedCell.row && cell.col === selectedCell.col
+        ? { ...cell, value: value }
+        : cell,
+    ),
+  );
+
+  return updateConflicts(filledGrid, selectedCell);
+};
+
 export const generateEmptyGrid = (): Grid => {
   return Array.from({ length: 9 }).map((_, row) =>
-    Array.from({ length: 9 }).map((_, col) => ({
-      row,
-      col,
-      value: 0,
-      isFixed: false,
-    })),
+    Array.from({ length: 9 }).map((_, col) => ({ row, col, value: 0 })),
   );
 };
+
 export const isValidSudoku = (grid: Grid): boolean => {
   const rows = Array.from({ length: 9 }, () => new Set<Cell>());
   const cols = Array.from({ length: 9 }, () => new Set<Cell>());
@@ -38,22 +46,21 @@ export const isValidSudoku = (grid: Grid): boolean => {
   return true;
 };
 
-export const getConflicts = (grid: Grid, cell: Cell): Set<string> => {
-  const { row, col } = cell;
-  const cellValue = grid[row][col];
-  const res = new Set<string>();
+export const updateConflicts = (grid: Grid, selectedCell: Cell) => {
+  const { row, col } = selectedCell;
+  const value = grid[row][col].value;
 
   for (let i = 0; i < 9; i++) {
-    if (!grid[row][i]) continue;
-    if (col != i && grid[row][i] === cellValue) {
-      res.add(`${row},${i}`);
+    if (!grid[row][i].value) continue;
+    if (col != i && grid[row][i].value === value) {
+      grid[row][i].isConflict = true;
     }
   }
 
   for (let i = 0; i < 9; i++) {
-    if (!grid[i][col]) continue;
-    if (row != i && grid[i][col] === cellValue) {
-      res.add(`${i},${col}`);
+    if (!grid[i][col].value) continue;
+    if (row != i && grid[i][col].value === value) {
+      grid[i][col].isConflict = true;
     }
   }
 
@@ -62,17 +69,13 @@ export const getConflicts = (grid: Grid, cell: Cell): Set<string> => {
 
   for (let i = rowStart; i < rowStart + 3; i++) {
     for (let j = colStart; j < colStart + 3; j++) {
-      if ((i !== row || j !== col) && grid[i][j] === cellValue) {
-        res.add(`${i},${j}`);
+      if ((i !== row || j !== col) && grid[i][j].value === value) {
+        grid[i][j].isConflict = true;
       }
     }
   }
 
-  return res;
-};
-
-export const isConflict = (conflicts: Set<string>, row: number, col: number) => {
-  return conflicts.has(`${row},${col}`);
+  return grid;
 };
 
 const isRowSafe = (grid: Grid, cell: Cell, value: number) => {
@@ -108,17 +111,23 @@ export const isSafeToPlace = (grid: Grid, cell: Cell, value: number) => {
 const fillGrid = (grid: Grid): boolean => {
   for (let row = 0; row < 9; row++) {
     for (let col = 0; col < 9; col++) {
-      if (grid[row][col].value === 0) {
+      if (!grid[row][col].value) {
         const numbers = Array.from({ length: 9 }, (_, i) => i + 1).sort(
           () => Math.random() - 0.5,
         );
         for (const num of numbers) {
-          if (isSafeToPlace(grid, { row, col, value: num, isFixed: false }, num)) {
-            grid[row][col] = { row, col, value: num, isFixed: true };
+          if (
+            isSafeToPlace(
+              grid,
+              { row, col, value: num, isFixed: false, isConflict: false },
+              num,
+            )
+          ) {
+            grid[row][col] = { row, col, value: num, isFixed: true, isConflict: false };
             if (fillGrid(grid)) {
               return true;
             }
-            grid[row][col] = { row, col, value: 0, isFixed: false };
+            grid[row][col] = { row, col, value: 0, isFixed: false, isConflict: false };
           }
         }
         return false;

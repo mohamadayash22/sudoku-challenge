@@ -2,7 +2,8 @@ export type Cell = {
   row: number;
   col: number;
   value: number;
-  isFixed: boolean;
+  isFixed?: boolean;
+  isConflict?: boolean;
 };
 
 export type Grid = Cell[][];
