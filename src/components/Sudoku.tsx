@@ -1,48 +1,65 @@
-import { Header, Controls, SudokuGrid, NumberPad } from "@/components";
+import { useCallback, useEffect, useState } from "react";
+import { SudokuGrid, NumberPad, Controls, Button, GameStats } from "@/components";
 import { useSudoku } from "@/contexts/sudoku/useSudoku";
-import { getConflicts } from "@/lib";
-import { Cell, Grid } from "@/types";
-import { useState } from "react";
+import { fillCell, generateSudokuPuzzle } from "@/lib";
+import { Cell } from "@/types";
+import { RefreshCcw } from "lucide-react";
+import { DifficultySelector } from "@/components/DifficultySelector";
+import { useKeyPress } from "@/hooks";
 
 export const Sudoku = () => {
-  const { grid, setGrid } = useSudoku();
-  const [conflicts, setConflicts] = useState<Set<string>>(new Set());
+  const { grid, setGrid, difficulty, setMoves } = useSudoku();
   const [selectedCell, setSelectedCell] = useState<Cell>(grid[0][0]);
+  const key = useKeyPress();
 
-  const fillCell = (value: number) => {
-    const { row, col, isFixed } = selectedCell;
-    console.log(selectedCell);
-    if (isFixed) return;
-    const newGrid = grid.map((cells) =>
-      cells.map((cell) =>
-        cell.col === col && cell.row === row ? { ...cell, value } : cell,
-      ),
-    );
-    setGrid(newGrid);
-    highlightConflicts(newGrid, selectedCell);
-  };
+  const handleFillCell = useCallback(
+    (value: number) => {
+      if (selectedCell.isFixed || selectedCell.value === value) return;
+      const newGrid = fillCell(grid, selectedCell, value);
+      setGrid(newGrid);
+      setMoves((prevMoves) => prevMoves + 1);
+    },
+    [grid, selectedCell, setGrid, setMoves],
+  );
 
-  const highlightConflicts = (grid: Grid, cell: Cell) => {
-    const conf = getConflicts(grid, cell);
-    setConflicts(new Set([...conflicts.values(), ...conf.values()]));
-  };
+  useEffect(() => {
+    if (key) {
+      handleFillCell(key);
+    }
+  }, [key, handleFillCell]);
 
   const handleCellClick = (cell: Cell) => {
     setSelectedCell(cell);
   };
 
+  const handleNewGameClick = () => {
+    const newGrid = generateSudokuPuzzle(difficulty);
+    setGrid(newGrid);
+    setMoves(0);
+  };
+
   return (
-    <div className="container w-full overflow-hidden rounded-xl bg-white shadow-lg md:w-2/3">
-      <Header />
-      <Controls />
-      <div className="mx-auto mb-5 flex items-center gap-5 px-12">
-        <SudokuGrid
-          grid={grid}
-          handleCellClick={handleCellClick}
-          selectedCell={selectedCell}
-          conflicts={conflicts}
-        />
-        <NumberPad fillCell={fillCell} />
+    <div className="container">
+      <div className="mx-auto mb-5 flex gap-12">
+        <div className="flex flex-col gap-5">
+          <DifficultySelector />
+          <SudokuGrid
+            grid={grid}
+            handleCellClick={handleCellClick}
+            selectedCell={selectedCell}
+          />
+        </div>
+        <div>
+          <GameStats />
+          <Controls />
+          <NumberPad fillCell={handleFillCell} />
+          <Button
+            title="New Game"
+            onClick={handleNewGameClick}
+            icon={RefreshCcw}
+            className="bg-blue-500 hover:bg-blue-600"
+          />
+        </div>
       </div>
     </div>
   );

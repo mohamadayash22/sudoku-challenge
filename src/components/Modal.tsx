@@ -1,50 +1,32 @@
+import React from "react";
+import ReactDOM from "react-dom";
+
 type Props = {
-  isOpen: boolean;
   onClose: () => void;
-  isValid: boolean;
+  message: string;
 };
 
-export const Modal = ({ isOpen, onClose, isValid }: Props) => {
-  if (!isOpen) return null;
-
-  return (
+export const Modal: React.FC<Props> = ({ onClose, message }) => {
+  return ReactDOM.createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
         <div className="mb-4 text-center">
-          <div
-            className={`mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full ${isValid ? "bg-green-100" : "bg-red-100"}`}
-          >
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
             <svg
-              className={`h-6 w-6 ${isValid ? "text-green-600" : "text-red-600"}`}
+              className="h-6 w-6 text-gray-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              {isValid ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900">
-            {isValid ? "Perfect!" : "Not quite right"}
-          </h3>
-          <p className="mt-2 text-sm text-gray-500">
-            {isValid
-              ? "Your solution is correct. Great job!"
-              : "There are some conflicts in your solution. Keep trying!"}
-          </p>
+          <p className="text-lg font-medium text-gray-700">{message}</p>
         </div>
         <button
           onClick={onClose}
@@ -53,6 +35,7 @@ export const Modal = ({ isOpen, onClose, isValid }: Props) => {
           Continue Playing
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };

@@ -1,6 +1,10 @@
 export { SudokuGrid } from "./SudokuGrid";
 export { Sudoku } from "./Sudoku";
-export { Header } from "./Header";
 export { Controls } from "./Controls";
 export { NumberPad } from "./NumberPad";
 export { Modal } from "./Modal";
+export { Footer } from "./Footer";
+export { Layout } from "./Layout";
+export { Navbar } from "./Navbar";
+export { Button } from "./Button";
+export { GameStats } from "./GameStats";

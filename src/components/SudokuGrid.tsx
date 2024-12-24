@@ -1,15 +1,13 @@
 import { Cell, Grid } from "@/types";
 import clsx from "clsx";
-import { isConflict } from "@/lib";
 
 type Props = {
   grid: Grid;
-  conflicts: Set<string>;
   selectedCell: Cell;
   handleCellClick: (cell: Cell) => void;
 };
 
-const getCellClass = (cell: Cell, selectedCell: Cell, conflicts: Set<string>) => {
+const getCellClass = (cell: Cell, selectedCell: Cell) => {
   const { row, col } = cell;
   const isSelected = selectedCell.row === row && selectedCell.col === col;
   const isSameRowOrCol = selectedCell.row === row || selectedCell.col === col;
@@ -25,11 +23,11 @@ const getCellClass = (cell: Cell, selectedCell: Cell, conflicts: Set<string>) =>
     !isSelected && isSameSubgrid && "bg-[#e2ebf3]",
     col % 3 === 2 && col !== 8 && "border-r-2 border-r-slate-900",
     row % 3 === 2 && row !== 8 && "border-b-2 border-b-slate-900",
-    isConflict(conflicts, selectedCell.row, selectedCell.col) && "text-red-600",
+    cell.isConflict && "bg-red-300",
   );
 };
 
-export const SudokuGrid = ({ grid, conflicts, selectedCell, handleCellClick }: Props) => {
+export const SudokuGrid = ({ grid, selectedCell, handleCellClick }: Props) => {
   return (
     <div className="grid h-[26rem] w-[26rem] grid-cols-9 grid-rows-9 border-2 border-slate-900">
       {grid.map((row) =>
@@ -37,7 +35,7 @@ export const SudokuGrid = ({ grid, conflicts, selectedCell, handleCellClick }: P
           <div
             key={`${cell.row}-${cell.col}`}
             onClick={() => handleCellClick(cell)}
-            className={getCellClass(cell, selectedCell, conflicts)}
+            className={getCellClass(cell, selectedCell)}
           >
             {cell.value ? cell.value : ""}
           </div>
