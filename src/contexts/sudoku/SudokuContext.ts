@@ -10,6 +10,8 @@ type ContextProps = {
   setDifficulty: React.Dispatch<React.SetStateAction<Difficulty>>;
   moves: number;
   setMoves: React.Dispatch<React.SetStateAction<number>>;
+  isPaused: boolean;
+  setIsPaused: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const SudokuContext = createContext<ContextProps | undefined>(undefined);

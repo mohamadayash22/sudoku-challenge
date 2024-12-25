@@ -1,5 +1,7 @@
+import { useSudoku } from "@/contexts/sudoku/useSudoku";
 import { Cell, Grid } from "@/types";
 import clsx from "clsx";
+import { Play } from "lucide-react";
 
 type Props = {
   grid: Grid;
@@ -28,19 +30,42 @@ const getCellClass = (cell: Cell, selectedCell: Cell) => {
 };
 
 export const SudokuGrid = ({ grid, selectedCell, handleCellClick }: Props) => {
+  const { isPaused, setIsPaused } = useSudoku();
+
+  const handleResumeClick = () => {
+    setIsPaused(false);
+  };
+
   return (
-    <div className="grid h-[26rem] w-[26rem] grid-cols-9 grid-rows-9 border-2 border-slate-900">
-      {grid.map((row) =>
-        row.map((cell) => (
-          <div
-            key={`${cell.row}-${cell.col}`}
-            onClick={() => handleCellClick(cell)}
-            className={getCellClass(cell, selectedCell)}
+    <div className="relative">
+      {isPaused && (
+        <div className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center">
+          <button
+            onClick={handleResumeClick}
+            className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-500 hover:bg-blue-600"
           >
-            {cell.value ? cell.value : ""}
-          </div>
-        )),
+            <Play size={30} color="white" />
+          </button>
+        </div>
       )}
+      <div
+        className={clsx(
+          "grid h-[26rem] w-[26rem] grid-cols-9 grid-rows-9 border-2 border-slate-900",
+          isPaused && "opacity-50",
+        )}
+      >
+        {grid.map((row) =>
+          row.map((cell) => (
+            <div
+              key={`${cell.row}-${cell.col}`}
+              onClick={() => !isPaused && handleCellClick(cell)}
+              className={getCellClass(cell, selectedCell)}
+            >
+              {cell.value && !isPaused ? cell.value : ""}
+            </div>
+          )),
+        )}
+      </div>
     </div>
   );
 };

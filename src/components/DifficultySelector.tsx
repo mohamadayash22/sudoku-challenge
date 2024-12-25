@@ -6,7 +6,8 @@ import clsx from "clsx";
 const levels = ["easy", "medium", "hard"];
 
 export const DifficultySelector = () => {
-  const { difficulty, setDifficulty, setGrid, setMoves } = useSudoku();
+  const { difficulty, setDifficulty, setGrid, setMoves, setTime, setIsPaused } =
+    useSudoku();
 
   const handleDifficultyChange = (level: string) => {
     const diff = level as Difficulty;
@@ -14,6 +15,8 @@ export const DifficultySelector = () => {
     setGrid(newGrid);
     setDifficulty(diff);
     setMoves(0);
+    setTime(0);
+    setIsPaused(false);
   };
 
   return (

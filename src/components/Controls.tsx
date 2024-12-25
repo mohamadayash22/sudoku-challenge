@@ -33,7 +33,7 @@ export const Controls = () => {
         >
           <Undo2 className="h-6 w-6" />
         </button>
-        <span className="text-sm font-medium text-gray-700">Undo</span>
+        <span className="text-sm font-medium text-gray-500">Undo</span>
       </div>
 
       <div className="flex flex-col items-center gap-1 text-center">
@@ -43,7 +43,7 @@ export const Controls = () => {
         >
           <CheckCircle className="h-6 w-6" />
         </button>
-        <span className="text-sm font-medium text-gray-700">Check</span>
+        <span className="text-sm font-medium text-gray-500">Check</span>
       </div>
 
       <div className="flex flex-col items-center gap-1 text-center">
@@ -53,7 +53,7 @@ export const Controls = () => {
         >
           <Eraser className="h-6 w-6" />
         </button>
-        <span className="text-sm font-medium text-gray-700">Erase</span>
+        <span className="text-sm font-medium text-gray-500">Erase</span>
       </div>
 
       <div className="flex flex-col items-center gap-1 text-center">
@@ -63,7 +63,7 @@ export const Controls = () => {
         >
           <Lightbulb className="h-6 w-6" />
         </button>
-        <span className="text-sm font-medium text-gray-700">Hint</span>
+        <span className="text-sm font-medium text-gray-500">Hint</span>
       </div>
     </div>
   );

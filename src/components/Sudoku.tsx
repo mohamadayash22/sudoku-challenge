@@ -8,7 +8,7 @@ import { DifficultySelector } from "@/components/DifficultySelector";
 import { useKeyPress } from "@/hooks";
 
 export const Sudoku = () => {
-  const { grid, setGrid, difficulty, setMoves } = useSudoku();
+  const { grid, setGrid, difficulty, setMoves, setIsPaused, setTime } = useSudoku();
   const [selectedCell, setSelectedCell] = useState<Cell>(grid[0][0]);
   const key = useKeyPress();
 
@@ -36,6 +36,8 @@ export const Sudoku = () => {
     const newGrid = generateSudokuPuzzle(difficulty);
     setGrid(newGrid);
     setMoves(0);
+    setIsPaused(false);
+    setTime(0);
   };
 
   return (
