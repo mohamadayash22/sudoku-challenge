@@ -1,17 +1,19 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-export const useTimer = (isPaused: boolean) => {
-  const [time, setTime] = useState(0);
+type Props = {
+  callback: () => void;
+  isPaused: boolean;
+  interval?: number;
+};
 
+export const useTimer = ({ callback, isPaused, interval = 1000 }: Props) => {
   useEffect(() => {
     if (isPaused) return;
 
-    const interval = setInterval(() => {
-      setTime((prevTime) => prevTime + 1);
-    }, 1000);
+    const timer = setInterval(() => {
+      callback();
+    }, interval);
 
-    return () => clearInterval(interval);
-  }, [isPaused]);
-
-  return [time, setTime] as const;
+    return () => clearInterval(timer);
+  }, [isPaused, callback, interval]);
 };
