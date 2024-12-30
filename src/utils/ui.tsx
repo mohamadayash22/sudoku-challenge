@@ -1,7 +1,7 @@
 import { Modal } from "@/components";
 import { createRoot } from "react-dom/client";
 
-export const showModal = (message: string) => {
+export const showModal = (message: string, success: boolean = false) => {
   const modalRoot = document.createElement("div");
   document.body.appendChild(modalRoot);
 
@@ -11,5 +11,5 @@ export const showModal = (message: string) => {
   };
 
   const root = createRoot(modalRoot);
-  root.render(<Modal onClose={handleClose} message={message} />);
+  root.render(<Modal onClose={handleClose} message={message} success={success} />);
 };

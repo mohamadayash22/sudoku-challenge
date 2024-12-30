@@ -1,81 +1,87 @@
 import { Cell, Difficulty, Grid } from "@/types";
 import { generateRandomNumber } from "@/utils";
 
-export const fillCell = (grid: Grid, selectedCell: Cell, value: number) => {
-  const filledGrid = grid.map((cells) =>
-    cells.map((cell) =>
-      cell.row === selectedCell.row && cell.col === selectedCell.col
-        ? { ...cell, value: value }
-        : cell,
-    ),
-  );
-
-  return updateConflicts(filledGrid, selectedCell);
-};
-
 export const generateEmptyGrid = (): Grid => {
   return Array.from({ length: 9 }).map((_, row) =>
     Array.from({ length: 9 }).map((_, col) => ({ row, col, value: 0 })),
   );
 };
 
+export const fillCell = (grid: Grid, selectedCell: Cell, value: number) => {
+  return grid.map((cells) =>
+    cells.map((cell) =>
+      cell.row === selectedCell.row && cell.col === selectedCell.col
+        ? { ...cell, value: value }
+        : cell,
+    ),
+  );
+};
+
+export const checkConflicts = (grid: Grid) => {
+  grid.forEach((row) => row.forEach((cell) => (cell.isConflict = false)));
+
+  const rows = Array.from({ length: 9 }, () => new Map<number, Cell[]>());
+  const cols = Array.from({ length: 9 }, () => new Map<number, Cell[]>());
+  const boxes = Array.from({ length: 9 }, () => new Map<number, Cell[]>());
+
+  grid.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      if (cell.value !== 0) {
+        const boxIndex = Math.floor(rowIndex / 3) * 3 + Math.floor(colIndex / 3);
+
+        if (!rows[rowIndex].has(cell.value)) rows[rowIndex].set(cell.value, []);
+        if (!cols[colIndex].has(cell.value)) cols[colIndex].set(cell.value, []);
+        if (!boxes[boxIndex].has(cell.value)) boxes[boxIndex].set(cell.value, []);
+
+        rows[rowIndex].get(cell.value)!.push(cell);
+        cols[colIndex].get(cell.value)!.push(cell);
+        boxes[boxIndex].get(cell.value)!.push(cell);
+      }
+    });
+  });
+
+  rows.forEach(markConflicts);
+  cols.forEach(markConflicts);
+  boxes.forEach(markConflicts);
+
+  return grid;
+};
+
+const markConflicts = (map: Map<number, Cell[]>) => {
+  map.forEach((cells) => {
+    if (cells.length > 1) {
+      cells.forEach((cell) => (cell.isConflict = true));
+    }
+  });
+};
+
 export const isValidSudoku = (grid: Grid): boolean => {
-  const rows = Array.from({ length: 9 }, () => new Set<Cell>());
-  const cols = Array.from({ length: 9 }, () => new Set<Cell>());
-  const subGrids = Array.from({ length: 9 }, () => new Set<Cell>());
+  const rows = Array.from({ length: 9 }, () => new Set<number>());
+  const cols = Array.from({ length: 9 }, () => new Set<number>());
+  const subGrids = Array.from({ length: 9 }, () => new Set<number>());
 
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
-      if (!grid[i][j]) continue;
+      const cell = grid[i][j];
+      if (!cell.value) return false;
+
       const subGridIndex = Math.floor(i / 3) * 3 + Math.floor(j / 3);
 
       if (
-        rows[i].has(grid[i][j]) ||
-        cols[j].has(grid[i][j]) ||
-        subGrids[subGridIndex].has(grid[i][j])
+        rows[i].has(cell.value) ||
+        cols[j].has(cell.value) ||
+        subGrids[subGridIndex].has(cell.value)
       ) {
         return false;
       }
 
-      rows[i].add(grid[i][j]);
-      cols[j].add(grid[i][j]);
-      subGrids[subGridIndex].add(grid[i][j]);
+      rows[i].add(cell.value);
+      cols[j].add(cell.value);
+      subGrids[subGridIndex].add(cell.value);
     }
   }
 
   return true;
-};
-
-export const updateConflicts = (grid: Grid, selectedCell: Cell) => {
-  const { row, col } = selectedCell;
-  const value = grid[row][col].value;
-
-  for (let i = 0; i < 9; i++) {
-    if (!grid[row][i].value) continue;
-    if (col != i && grid[row][i].value === value) {
-      grid[row][i].isConflict = true;
-    }
-  }
-
-  for (let i = 0; i < 9; i++) {
-    if (!grid[i][col].value) continue;
-    if (row != i && grid[i][col].value === value) {
-      grid[i][col].isConflict = true;
-    }
-  }
-
-  const rowStart = Math.floor(row / 3) * 3;
-  const colStart = Math.floor(col / 3) * 3;
-
-  for (let i = rowStart; i < rowStart + 3; i++) {
-    for (let j = colStart; j < colStart + 3; j++) {
-      if ((i !== row || j !== col) && grid[i][j].value === value) {
-        grid[i][j].isConflict = true;
-      }
-    }
-  }
-
-  return grid;
 };
 
 const isRowSafe = (grid: Grid, cell: Cell, value: number) => {
@@ -161,8 +167,10 @@ const removeNumbers = (grid: Grid, numToRemove: number): Grid => {
   return puzzle;
 };
 
-export const generateSudokuPuzzle = (difficulty: Difficulty): Grid => {
+export const generateSudokuPuzzle = (difficulty: Difficulty) => {
   const completeGrid = generateSudoku();
+  const solution = structuredClone(completeGrid);
+
   let numToRemove: number;
 
   switch (difficulty) {
@@ -179,7 +187,8 @@ export const generateSudokuPuzzle = (difficulty: Difficulty): Grid => {
       numToRemove = 30;
   }
 
-  return removeNumbers(completeGrid, numToRemove);
+  const grid = removeNumbers(completeGrid, numToRemove);
+  return { grid, solution };
 };
 
 export const solveSudoku = (grid: Grid, row: number = 0, col: number = 0): boolean => {
@@ -196,4 +205,17 @@ export const solveSudoku = (grid: Grid, row: number = 0, col: number = 0): boole
     }
     return false;
   }
+};
+
+export const provideHint = (grid: Grid, solution: Grid): Cell | null => {
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      if (!grid[row][col].value) {
+        grid[row][col].value = solution[row][col].value;
+        return grid[row][col];
+      }
+    }
+  }
+
+  return null;
 };
