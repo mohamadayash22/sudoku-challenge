@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import { CheckCircle, XCircle } from "lucide-react";
 
