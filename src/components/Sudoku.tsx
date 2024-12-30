@@ -1,43 +1,56 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { SudokuGrid, NumberPad, Controls, Button, GameStats } from "@/components";
-import { useSudoku } from "@/contexts/sudoku/useSudoku";
-import { fillCell, generateSudokuPuzzle } from "@/lib";
-import { Cell } from "@/types";
 import { RefreshCcw } from "lucide-react";
 import { DifficultySelector } from "@/components/DifficultySelector";
 import { useKeyPress } from "@/hooks";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  reset,
+  setIsPaused,
+  setSelectedCell,
+  updateCell,
+} from "@/state/sudoku/sudokuSlice";
+import { RootState } from "@/state/store";
+import { Cell } from "@/types";
 
 export const Sudoku = () => {
-  const { grid, setGrid, difficulty, setMoves, setIsPaused, setTime } = useSudoku();
-  const [selectedCell, setSelectedCell] = useState<Cell>(grid[0][0]);
+  const { grid, selectedCell, isPaused } = useSelector(
+    (state: RootState) => state.sudoku,
+  );
+
+  const dispatch = useDispatch();
   const key = useKeyPress();
 
-  const handleFillCell = useCallback(
+  const handleFillClick = useCallback(
     (value: number) => {
-      if (selectedCell.isFixed || selectedCell.value === value) return;
-      const newGrid = fillCell(grid, selectedCell, value);
-      setGrid(newGrid);
-      setMoves((prevMoves) => prevMoves + 1);
+      dispatch(updateCell(value));
     },
-    [grid, selectedCell, setGrid, setMoves],
+    [dispatch],
   );
 
   useEffect(() => {
     if (key) {
-      handleFillCell(key);
+      handleFillClick(key);
     }
-  }, [key, handleFillCell]);
+  }, [key, handleFillClick]);
+
+  const handleNumberClick = (value: number) => {
+    dispatch(updateCell(value));
+  };
 
   const handleCellClick = (cell: Cell) => {
-    setSelectedCell(cell);
+    dispatch(setSelectedCell(cell));
   };
 
   const handleNewGameClick = () => {
-    const newGrid = generateSudokuPuzzle(difficulty);
-    setGrid(newGrid);
-    setMoves(0);
-    setIsPaused(false);
-    setTime(0);
+    const userConfirmed = window.confirm("Are you sure you want to start a new game?");
+    if (userConfirmed) {
+      dispatch(reset());
+    }
+  };
+
+  const handleResumeClick = () => {
+    dispatch(setIsPaused(false));
   };
 
   return (
@@ -47,14 +60,16 @@ export const Sudoku = () => {
           <DifficultySelector />
           <SudokuGrid
             grid={grid}
-            handleCellClick={handleCellClick}
             selectedCell={selectedCell}
+            isPaused={isPaused}
+            handleCellClick={handleCellClick}
+            handleResumeClick={handleResumeClick}
           />
         </div>
         <div>
           <GameStats />
           <Controls />
-          <NumberPad fillCell={handleFillCell} />
+          <NumberPad handleNumberClick={handleNumberClick} />
           <Button
             title="New Game"
             onClick={handleNewGameClick}

@@ -1,22 +1,18 @@
-import { useSudoku } from "@/contexts/sudoku/useSudoku";
-import { generateSudokuPuzzle } from "@/lib";
+import { RootState } from "@/state/store";
+import { setDifficulty } from "@/state/sudoku/sudokuSlice";
 import { Difficulty } from "@/types";
 import clsx from "clsx";
+import { useDispatch, useSelector } from "react-redux";
 
 const levels = ["easy", "medium", "hard"];
 
 export const DifficultySelector = () => {
-  const { difficulty, setDifficulty, setGrid, setMoves, setTime, setIsPaused } =
-    useSudoku();
+  const dispatch = useDispatch();
+  const { difficulty } = useSelector((state: RootState) => state.sudoku);
 
   const handleDifficultyChange = (level: string) => {
     const diff = level as Difficulty;
-    const newGrid = generateSudokuPuzzle(diff);
-    setGrid(newGrid);
-    setDifficulty(diff);
-    setMoves(0);
-    setTime(0);
-    setIsPaused(false);
+    dispatch(setDifficulty(diff));
   };
 
   return (

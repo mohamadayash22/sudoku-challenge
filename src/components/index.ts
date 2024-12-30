@@ -8,3 +8,6 @@ export { Layout } from "./Layout";
 export { Navbar } from "./Navbar";
 export { Button } from "./Button";
 export { GameStats } from "./GameStats";
+export { ControlButton } from "./ControlButton";
+export { SolverControls } from "./SolverControls";
+export { SudokuSolver } from "./SudokuSolver";

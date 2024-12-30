@@ -6,14 +6,16 @@ type Props = {
   onClick: () => void;
   icon?: LucideIcon;
   className?: string;
+  disabled?: boolean;
 };
 
-export const Button = ({ title, onClick, icon: Icon, className }: Props) => {
+export const Button = ({ title, onClick, icon: Icon, className, disabled }: Props) => {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={clsx(
-        "mt-5 flex w-full justify-center gap-2 rounded-lg px-4 py-3 text-center font-medium text-white transition-colors",
+        "transition-color mt-5 flex w-full justify-center gap-2 rounded-lg px-4 py-3 text-center font-medium text-white disabled:bg-opacity-50",
         className,
       )}
     >

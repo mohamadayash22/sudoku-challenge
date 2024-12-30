@@ -1,70 +1,70 @@
-import { useSudoku } from "@/contexts/sudoku/useSudoku";
 import { showModal } from "@/utils";
 import { Undo2, Eraser, Lightbulb, CheckCircle } from "lucide-react";
+import { ControlButton } from "@/components";
+import ReactConfetti from "react-confetti";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { undo, erase, isValid, hint } from "@/state/sudoku/sudokuSlice";
 
 export const Controls = () => {
-  const { setGrid } = useSudoku();
+  const dispatch = useDispatch();
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const handleUndoClick = () => {};
-
-  const handleEraseClick = () => {
-    setGrid((prevGrid) =>
-      prevGrid.map((cells) =>
-        cells.map((cell) => {
-          cell.isConflict = false;
-          return cell.isFixed ? cell : { ...cell, value: 0 };
-        }),
-      ),
-    );
+  const handleUndoClick = () => {
+    dispatch(undo());
   };
 
-  const handleHintClick = () => {};
+  const handleEraseClick = () => {
+    dispatch(erase());
+  };
+
+  const handleHintClick = () => {
+    dispatch(hint());
+  };
 
   const handleCheckClick = () => {
-    showModal("test");
+    const isCompleted = dispatch(isValid(false)).payload;
+    if (isCompleted) {
+      showModal(
+        "Congratulations! You have successfully completed the Sudoku puzzle. Great job!",
+        true,
+      );
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
+    } else {
+      showModal(
+        "The solution is incorrect. Please review the puzzle and try again. Make sure there are no conflicts or empty cells.",
+      );
+    }
   };
 
   return (
     <div className="mb-4 flex gap-6">
-      <div className="flex flex-col items-center gap-1 text-center">
-        <button
-          onClick={handleUndoClick}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-white transition-colors hover:bg-blue-600"
-        >
-          <Undo2 className="h-6 w-6" />
-        </button>
-        <span className="text-sm font-medium text-gray-500">Undo</span>
-      </div>
-
-      <div className="flex flex-col items-center gap-1 text-center">
-        <button
-          onClick={handleCheckClick}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white transition-colors hover:bg-green-600"
-        >
-          <CheckCircle className="h-6 w-6" />
-        </button>
-        <span className="text-sm font-medium text-gray-500">Check</span>
-      </div>
-
-      <div className="flex flex-col items-center gap-1 text-center">
-        <button
-          onClick={handleEraseClick}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500 text-white transition-colors hover:bg-red-600"
-        >
-          <Eraser className="h-6 w-6" />
-        </button>
-        <span className="text-sm font-medium text-gray-500">Erase</span>
-      </div>
-
-      <div className="flex flex-col items-center gap-1 text-center">
-        <button
-          onClick={handleHintClick}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-yellow-500 text-white transition-colors hover:bg-yellow-600"
-        >
-          <Lightbulb className="h-6 w-6" />
-        </button>
-        <span className="text-sm font-medium text-gray-500">Hint</span>
-      </div>
+      {showConfetti && <ReactConfetti />}
+      <ControlButton
+        onClick={handleUndoClick}
+        icon={Undo2}
+        label="Undo"
+        className="bg-blue-500 hover:bg-blue-600"
+      />
+      <ControlButton
+        onClick={handleCheckClick}
+        icon={CheckCircle}
+        label="Check"
+        className="bg-green-500 hover:bg-green-600"
+      />
+      <ControlButton
+        onClick={handleEraseClick}
+        icon={Eraser}
+        label="Erase"
+        className="bg-red-500 hover:bg-red-600"
+      />
+      <ControlButton
+        onClick={handleHintClick}
+        icon={Lightbulb}
+        label="Hint"
+        className="bg-yellow-500 hover:bg-yellow-600"
+      />
     </div>
   );
 };

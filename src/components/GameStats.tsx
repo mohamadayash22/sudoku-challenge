@@ -1,12 +1,17 @@
-import { useSudoku } from "@/contexts/sudoku/useSudoku";
+import { useTimer } from "@/hooks";
+import { RootState } from "@/state/store";
+import { incrementTime, setIsPaused } from "@/state/sudoku/sudokuSlice";
 import { formatTime } from "@/utils";
 import { Pause, Play } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 
 export const GameStats = () => {
-  const { moves, time, isPaused, setIsPaused } = useSudoku();
+  const dispatch = useDispatch();
+  const { moves, time, isPaused } = useSelector((state: RootState) => state.sudoku);
+  useTimer({ isPaused, callback: () => dispatch(incrementTime()) });
 
   const handlePauseClick = () => {
-    setIsPaused((prevIsPaused) => !prevIsPaused);
+    dispatch(setIsPaused(!isPaused));
   };
 
   return (
