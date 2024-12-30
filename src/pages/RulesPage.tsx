@@ -39,11 +39,6 @@ export const RulesPage = () => {
             deal with them quickly, you need to use some tricks and learn advanced Sudoku
             techniques.
           </p>
-          <p className="text-gray-700">
-            Our Sudoku guide has a lot of tutorial videos for players of all skill levels:
-            from Sudoku absolute beginners to experts. Watch the videos to check out all
-            the rules, tips and strategies of Sudoku and enjoy the game!
-          </p>
         </div>
       </section>
     </div>
