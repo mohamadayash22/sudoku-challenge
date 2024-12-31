@@ -30,27 +30,24 @@ export const SudokuSolver = () => {
   }, [key]);
 
   return (
-    <div className="container">
-      <div className="mx-auto mb-5 flex gap-12">
-        <div className="flex flex-col gap-5">
-          <SudokuGrid
-            grid={grid}
-            selectedCell={selectedCell}
-            handleCellClick={handleCellClick}
-          />
-        </div>
-        <div>
-          <SolverControls />
-          <NumberPad handleNumberClick={handleNumberClick} />
-          <Button
-            title="Solve Sudoku"
-            onClick={handleSolveClick}
-            icon={CheckCircle}
-            className="bg-blue-500 hover:bg-blue-600"
-            disabled={false}
-          />
-        </div>
-        <div className="w-1/4"></div>
+    <div className="mx-auto mb-5 flex gap-12">
+      <div className="flex flex-col gap-5">
+        <SudokuGrid
+          grid={grid}
+          selectedCell={selectedCell}
+          handleCellClick={handleCellClick}
+        />
+      </div>
+      <div>
+        <SolverControls />
+        <NumberPad handleNumberClick={handleNumberClick} />
+        <Button
+          title="Solve Sudoku"
+          onClick={handleSolveClick}
+          icon={CheckCircle}
+          className="bg-blue-500 hover:bg-blue-600"
+          disabled={false}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 export const RulesPage = () => {
   return (
-    <div className="container">
+    <>
       <section className="mb-8">
         <h1 className="mb-4 text-4xl font-bold text-slate-900">Sudoku Rules</h1>
         <div className="mt-6">
@@ -41,7 +41,7 @@ export const RulesPage = () => {
           </p>
         </div>
       </section>
-    </div>
+    </>
   );
 };
 

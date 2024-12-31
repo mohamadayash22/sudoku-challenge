@@ -2,7 +2,7 @@ import { Sudoku } from "@/components";
 
 export const HomePage = () => {
   return (
-    <div className="container">
+    <>
       <Sudoku />
       <div className="mb-12 mt-20 space-y-12">
         <section>
@@ -72,7 +72,7 @@ export const HomePage = () => {
           </p>
         </section>
       </div>
-    </div>
+    </>
   );
 };
 

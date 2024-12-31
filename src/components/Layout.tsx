@@ -2,9 +2,9 @@ import { Footer, Navbar } from "@/components";
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex min-h-screen flex-col bg-white">
       <Navbar />
-      <main className="container py-5">{children}</main>
+      <main className="container flex-grow py-5">{children}</main>
       <Footer />
     </div>
   );

@@ -54,29 +54,27 @@ export const Sudoku = () => {
   };
 
   return (
-    <div className="container">
-      <div className="mx-auto mb-5 flex gap-12">
-        <div className="flex flex-col gap-5">
-          <DifficultySelector />
-          <SudokuGrid
-            grid={grid}
-            selectedCell={selectedCell}
-            isPaused={isPaused}
-            handleCellClick={handleCellClick}
-            handleResumeClick={handleResumeClick}
-          />
-        </div>
-        <div>
-          <GameStats />
-          <Controls />
-          <NumberPad handleNumberClick={handleNumberClick} />
-          <Button
-            title="New Game"
-            onClick={handleNewGameClick}
-            icon={RefreshCcw}
-            className="bg-blue-500 hover:bg-blue-600"
-          />
-        </div>
+    <div className="mx-auto mb-5 flex gap-12">
+      <div className="flex flex-col gap-5">
+        <DifficultySelector />
+        <SudokuGrid
+          grid={grid}
+          selectedCell={selectedCell}
+          isPaused={isPaused}
+          handleCellClick={handleCellClick}
+          handleResumeClick={handleResumeClick}
+        />
+      </div>
+      <div>
+        <GameStats />
+        <Controls />
+        <NumberPad handleNumberClick={handleNumberClick} />
+        <Button
+          title="New Game"
+          onClick={handleNewGameClick}
+          icon={RefreshCcw}
+          className="bg-blue-500 hover:bg-blue-600"
+        />
       </div>
     </div>
   );

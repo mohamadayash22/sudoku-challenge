@@ -2,7 +2,7 @@ import { SudokuSolver } from "@/components";
 
 export const SolverPage = () => {
   return (
-    <div>
+    <>
       <SudokuSolver />
       <div className="mb-12 mt-20 space-y-12">
         <section>
@@ -67,6 +67,6 @@ export const SolverPage = () => {
           </p>
         </section>
       </div>
-    </div>
+    </>
   );
 };
