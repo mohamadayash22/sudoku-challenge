@@ -4,16 +4,15 @@ A Sudoku game built with React and TypeScript, offering multiple difficulty leve
 
 ## Demo
 
-Check out the live demo: [Sudoku Game Demo](https://sudoku-challenge-three.vercel.app/)
+Check out the live demo: <a href="https://sudoku-challenge-three.vercel.app/" target="_blank">Sudoku Game Demo</a>
 
 ## Features
 
 - **Multiple Difficulty Levels:** Easy, Medium, and Hard
-- **User-Friendly Interface:** Intuitive and responsive design
 - **Timer:** Track your solving time
 - **Hint System:** Get hints to assist in solving puzzles
 - **Mistake Checking:** Validate your solution and highlight mistakes
-- **Puzzle Generator:** Generate new puzzles with unique solutions
+- **Sudoku Generator:** Generate new sudoku puzzles with unique solutions
 - **Manual Solver:** Input an incomplete Sudoku board and solve it
 
 ## Project Structure
