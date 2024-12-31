@@ -66,7 +66,7 @@ const sudokuSlice = createSlice({
     erase(state) {
       state.grid = state.grid.map((row) =>
         row.map((cell) => {
-          if (!cell.isFixed) return { ...cell, value: 0 };
+          if (!cell.isFixed) return { ...cell, value: 0, isConflict: false };
           else return { ...cell, isConflict: false };
         }),
       );
