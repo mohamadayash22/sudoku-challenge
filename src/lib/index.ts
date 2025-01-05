@@ -219,3 +219,9 @@ export const provideHint = (grid: Grid, solution: Grid): Cell | null => {
 
   return null;
 };
+
+export const isValidSolver = (grid: Grid): boolean => {
+  const isNotEmpty = grid.some((cells) => cells.some((cell) => cell.value));
+  const hasNoConflicts = grid.every((cells) => cells.every((cell) => !cell.isConflict));
+  return isNotEmpty && hasNoConflicts;
+};

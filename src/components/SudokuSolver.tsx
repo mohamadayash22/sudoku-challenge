@@ -9,8 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export const SudokuSolver = () => {
   const dispatch = useDispatch();
-  const { grid, selectedCell } = useSelector((state: RootState) => state.solver);
-
+  const { grid, selectedCell, isValid } = useSelector((state: RootState) => state.solver);
   const key = useKeyPress();
 
   const handleNumberClick = (value: number) => {
@@ -46,7 +45,7 @@ export const SudokuSolver = () => {
           onClick={handleSolveClick}
           icon={CheckCircle}
           className="bg-blue-500 hover:bg-blue-600"
-          disabled={false}
+          disabled={!isValid}
         />
       </div>
     </div>

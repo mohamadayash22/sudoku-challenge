@@ -1,5 +1,5 @@
 import { ControlButton } from "@/components";
-import { erase, undo } from "@/state/sudoku/solverSlice";
+import { eraseAll, undo } from "@/state/sudoku/solverSlice";
 import { Eraser, Undo2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 
@@ -11,7 +11,7 @@ export const SolverControls = () => {
   };
 
   const handleEraseClick = () => {
-    dispatch(erase());
+    dispatch(eraseAll());
   };
 
   return (

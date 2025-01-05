@@ -1,4 +1,4 @@
-import { checkConflicts, fillCell, generateEmptyGrid, solveSudoku } from "@/lib";
+import { checkConflicts, fillCell, generateEmptyGrid, isValidSolver, solveSudoku } from "@/lib";
 import { Cell, Grid } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -6,6 +6,7 @@ type SolverState = {
   grid: Grid;
   selectedCell: Cell;
   history: Cell[];
+  isValid: boolean;
 };
 
 const initialGrid = generateEmptyGrid();
@@ -14,6 +15,7 @@ const initialState: SolverState = {
   grid: initialGrid,
   selectedCell: initialGrid[0][0],
   history: [],
+  isValid: false,
 };
 
 const solverSlice = createSlice({
@@ -33,14 +35,16 @@ const solverSlice = createSlice({
         state.history.push(state.selectedCell);
         state.selectedCell.value = action.payload;
         state.grid = checkConflicts(state.grid);
+        state.isValid = isValidSolver(state.grid);
       }
     },
     solve(state) {
       solveSudoku(state.grid);
     },
-    erase(state) {
+    eraseAll(state) {
       state.grid = generateEmptyGrid();
       state.history = [];
+      state.isValid = false;
     },
     undo(state) {
       if (state.history.length >= 1) {
@@ -53,12 +57,13 @@ const solverSlice = createSlice({
           state.grid[row][col].value = 0;
         }
         state.grid = checkConflicts(state.grid);
+        state.isValid = isValidSolver(state.grid);
       }
     },
   },
 });
 
-export const { setGrid, setSelectedCell, updateCell, solve, erase, undo } =
+export const { setGrid, setSelectedCell, updateCell, solve, eraseAll, undo } =
   solverSlice.actions;
 
 export default solverSlice.reducer;
